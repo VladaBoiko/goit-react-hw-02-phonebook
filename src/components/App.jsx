@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-// import { nanoid } from 'nanoid';
 import { AddForm } from 'components/Form/Form';
 import { MainTitle } from './MainTitle/MainTitle';
 import { Section } from './SectionWithTitle/SectionWithTitle';
-// import { nanoid } from 'nanoid';
 
-// import { ContactList } from './ContactsList/ContactsList';
+import { ContactList } from './ContactsList/ContactsList';
 
 export class App extends Component {
   state = {
@@ -17,7 +15,6 @@ export class App extends Component {
     id: null,
   };
   updateContacts = formValues => {
-    // console.log(formValues);
     this.setState({
       contacts: this.state.contacts.concat(formValues),
     });
@@ -29,7 +26,6 @@ export class App extends Component {
   };
   render() {
     console.log(this.state);
-    // console.log(this.formValues);
     return (
       <div
         style={{
@@ -43,15 +39,13 @@ export class App extends Component {
       >
         <MainTitle></MainTitle>
         <AddForm
-          state={this.state}
           newName={this.newName}
-          // generateID={this.generateID}
-          formValues={this.formValues}
+          state={this.formValues}
           updateContacts={this.updateContacts}
         ></AddForm>
 
         <Section title="Contacts">
-          {/* <ContactList states={this.state}></ContactList> */}
+          <ContactList states={this.state.contacts}></ContactList>
         </Section>
       </div>
     );
