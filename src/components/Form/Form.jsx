@@ -2,43 +2,37 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { nanoid } from 'nanoid';
 import * as yup from 'yup';
 
-// const schema = yup.object().shape({
-//   name: yup.string().required(),
-// });
-const schema = yup.object({
-  name: yup
-    .string()
-    .label('Full Name')
-    .required()
-    .test(
-      'is-full-name',
-      'Please enter both your first and last name',
-      function (value) {
-        const nameArr = value.split(' ');
-        return nameArr.length >= 2;
-      }
-    ),
+const schema = yup.object().shape({
+  name: yup.string().required(),
 });
+// const schema = yup.object({
+//   name: yup
+//     .string()
+//     .label('Full Name')
+//     .required()
+//     .test(
+//       'is-full-name',
+//       'Please enter both your first and last name',
+//       function (value) {
+//         const nameArr = value.split(' ');
+//         return nameArr.length >= 2;
+//       }
+//     ),
+// });
 const generateID = () => {
   return nanoid(4);
 };
-export const AddForm = ({ state, newName, updateContacts }) => {
-  const addStateValues = values => {
-    state.id = values.id;
-    state.name = values.name;
-  };
+export const AddForm = ({ initialValues, updateContacts }) => {
   const handleSubmit = (values, { resetForm }) => {
-    values.id = generateID();
-    newName(values);
     updateContacts(values);
-
-    addStateValues(values);
+    values.id = generateID();
+    // console.log(values);
     resetForm();
   };
 
   return (
     <Formik
-      initialValues={state}
+      initialValues={initialValues}
       validationSchema={schema}
       onSubmit={handleSubmit}
     >
@@ -49,10 +43,20 @@ export const AddForm = ({ state, newName, updateContacts }) => {
             type="text"
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            // title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
           />
           <ErrorMessage name="name" component="p" />
+        </label>
+        <label htmlFor="number">
+          <Field
+            type="tel"
+            name="number"
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+            required
+          />
+          <ErrorMessage name="number" component="p" />
         </label>
         <button type="submit">Add contact</button>
       </Form>

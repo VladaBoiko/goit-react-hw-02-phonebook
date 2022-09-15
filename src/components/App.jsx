@@ -9,23 +9,21 @@ export class App extends Component {
   state = {
     contacts: [],
     name: '',
+    number: '',
   };
+
   formValues = {
     name: '',
+    number: '',
     id: null,
   };
-  updateContacts = formValues => {
+  updateContacts = values => {
     this.setState({
-      contacts: this.state.contacts.concat(formValues),
-    });
-  };
-  newName = formValues => {
-    this.setState({
-      name: formValues.name,
+      contacts: this.state.contacts.concat(values),
     });
   };
   render() {
-    console.log(this.state);
+    // console.log(this.state.contacts);
     return (
       <div
         style={{
@@ -39,13 +37,16 @@ export class App extends Component {
       >
         <MainTitle></MainTitle>
         <AddForm
-          newName={this.newName}
-          state={this.formValues}
+          initialValues={this.formValues}
           updateContacts={this.updateContacts}
         ></AddForm>
 
         <Section title="Contacts">
-          <ContactList states={this.state.contacts}></ContactList>
+          {this.state.contacts.length >= 1 ? (
+            <ContactList states={this.state.contacts}></ContactList>
+          ) : (
+            <p>No contacts yet =( </p>
+          )}
         </Section>
       </div>
     );
