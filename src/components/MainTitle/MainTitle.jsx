@@ -1,3 +1,4 @@
+import { Title } from './MainTitle.styled';
 export const MainTitle = () => {
-  return <h1>Phonebook</h1>;
+  return <Title>Phonebook</Title>;
 };

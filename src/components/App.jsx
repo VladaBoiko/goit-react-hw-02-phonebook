@@ -2,28 +2,60 @@ import React, { Component } from 'react';
 import { AddForm } from 'components/Form/Form';
 import { MainTitle } from './MainTitle/MainTitle';
 import { Section } from './SectionWithTitle/SectionWithTitle';
-
+import { Message } from './Messages/Message';
 import { ContactList } from './ContactsList/ContactsList';
+import { Filter } from './Filter/Filter';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 export class App extends Component {
   state = {
-    contacts: [],
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
     name: '',
     number: '',
+    filter: '',
   };
 
-  formValues = {
-    name: '',
-    number: '',
-    id: null,
+  updateContact = values => {
+    const contacts = this.state.contacts;
+
+    contacts.every(contact => contact.name !== values.name)
+      ? this.setState({
+          contacts: this.state.contacts.concat(values),
+        })
+      : Notify.failure('You have this contact in your list');
   };
-  updateContacts = values => {
+  iNeedName = values => {
     this.setState({
-      contacts: this.state.contacts.concat(values),
+      name: values.name,
     });
   };
+  changeFilter = e => {
+    this.setState({
+      filter: e.currentTarget.value,
+    });
+  };
+  filter = (contacts, filter) => {
+    const normalizedFilter = filter.toLowerCase();
+    const filterContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+    if (filterContacts.length < 1) {
+      Notify.warning('No matches =(');
+    }
+    return filterContacts;
+  };
+  removeContact = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
   render() {
-    // console.log(this.state.contacts);
+    const { contacts, filter } = this.state;
     return (
       <div
         style={{
@@ -35,17 +67,20 @@ export class App extends Component {
           alignItems: 'center',
         }}
       >
-        <MainTitle></MainTitle>
+        <MainTitle />
         <AddForm
-          initialValues={this.formValues}
-          updateContacts={this.updateContacts}
-        ></AddForm>
-
+          updateContacts={this.updateContact}
+          iNeedName={this.iNeedName}
+        />
+        <Filter filter={filter} changeFilter={this.changeFilter} />{' '}
         <Section title="Contacts">
-          {this.state.contacts.length >= 1 ? (
-            <ContactList states={this.state.contacts}></ContactList>
+          {contacts.length >= 1 ? (
+            <ContactList
+              states={this.filter(contacts, filter)}
+              removeContact={this.removeContact}
+            />
           ) : (
-            <p>No contacts yet =( </p>
+            <Message msg="No contacts yet =("></Message>
           )}
         </Section>
       </div>

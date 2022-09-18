@@ -1,15 +1,33 @@
-export const ContactList = ({ states }) => {
+import { ContactItem } from '../ContactItem/ContactItem';
+import { List } from './ContactsList.styled';
+import PropTypes from 'prop-types';
+export const ContactList = ({ states, removeContact }) => {
   return (
-    <ul>
+    <List>
       {states.map(state => {
-        console.log(state);
         return (
-          <li key={state.id}>
-            <span>{state.name}</span>
-            <span>{state.number}</span>
-          </li>
+          <ContactItem
+            name={state.name}
+            key={state.id}
+            number={state.number}
+            removeContact={removeContact}
+            id={state.id}
+          />
         );
       })}{' '}
-    </ul>
+    </List>
   );
+};
+
+ContactList.propTypes = {
+  states: PropTypes.array({
+    name: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    contacts: PropTypes.shape({
+      name: PropTypes.string.isRequared,
+      id: PropTypes.string.isRequared,
+      number: PropTypes.string.isRequared,
+    }),
+  }),
+  removeContact: PropTypes.func.isRequired,
 };
